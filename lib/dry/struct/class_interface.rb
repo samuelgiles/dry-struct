@@ -126,7 +126,7 @@ module Dry
         else
           name, type = args
 
-          attribute(:"#{ name }?", build_type(name, type, &block))
+          attribute(name, build_type(name, type, &block))
         end
       end
 
@@ -149,7 +149,7 @@ module Dry
       #   #      author: Nominal<String>
       #   #    }> fn=Kernel.Hash>]>
       def attributes(new_schema)
-        keys = new_schema.keys.map { |k| k.to_s.chomp('?').to_sym }
+        keys = new_schema.keys.map { |k| k.to_s.to_sym }
         check_schema_duplication(keys)
 
         schema schema.schema(new_schema)
@@ -167,7 +167,7 @@ module Dry
 
         direct_descendants = descendants.select { |d| d.superclass == self }
         direct_descendants.each do |d|
-          inherited_attrs = new_schema.reject { |k, _| d.has_attribute?(k.to_s.chomp('?').to_sym) }
+          inherited_attrs = new_schema.reject { |k, _| d.has_attribute?(k.to_s.to_sym) }
           d.attributes(inherited_attrs)
         end
 
